@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layout}">
+
+<head>
+    <title>Quan Ly San Pham</title>
+</head>
+
+<body>
+    <section layout:fragment="content" class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-0">Danh sach san pham</h4>
+            <a href="/products/add" class="btn btn-danger"
+                sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_MANAGER')">
+                <i class="bi bi-plus-circle"></i> Them san pham
+            </a>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 70px;">#</th>
+                                <th>Ten san pham</th>
+                                <th style="width: 180px;">Gia</th>
+                                <th style="width: 140px;">Ton kho</th>
+                                <th style="width: 180px;">Hanh dong</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(products)}">
+                                <td colspan="5" class="text-center text-muted py-4">Chua co san pham nao.</td>
+                            </tr>
+                            <tr th:each="p, stat : ${products}">
+                                <td th:text="${stat.count}">1</td>
+                                <td>
+                                    <div class="fw-semibold" th:text="${p.name}">Ten san pham</div>
+                                    <div class="small text-muted" th:text="${p.category != null ? p.category.name : 'Khong co danh muc'}">
+                                        Danh muc
+                                    </div>
+                                </td>
+                                <td class="text-danger fw-bold"
+                                    th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</td>
+                                <td th:text="${p.stockQuantity}">0</td>
+                                <td sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_MANAGER')">
+                                    <a th:href="@{/products/edit/{id}(id=${p.id})}"
+                                        class="btn btn-sm btn-outline-primary me-1">Sua</a>
+                                    <a th:href="@{/products/delete/{id}(id=${p.id})}"
+                                        class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Ban chac chan muon xoa san pham nay?');">Xoa</a>
+                                </td>
+                                <td sec:authorize="hasAuthority('ROLE_USER')" class="text-muted small">Chi xem</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

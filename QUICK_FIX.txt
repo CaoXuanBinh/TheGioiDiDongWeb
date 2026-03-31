@@ -1,0 +1,127 @@
+🔴 PROBLEM: Không có dữ liệu khi GET /api/products
+🟢 SOLUTION: Hướng dẫn chi tiết
+
+==========================================
+STEP 1: Kiểm tra MySQL đang chạy
+==========================================
+
+Windows:
+  1. Nhấn Win + R
+  2. Gõ: services.msc
+  3. Tìm: MySQL80 hoặc MySQL57
+  4. Nếu chưa chạy → Right-click → Start
+  5. Status phải là: "Running" ✓
+
+macOS:
+  $ brew services start mysql
+
+Linux:
+  $ sudo systemctl start mysql
+
+
+==========================================
+STEP 2: Check MySQL password
+==========================================
+
+File: src/main/resources/application.properties
+
+Dòng 7:
+  spring.datasource.password=
+
+Nếu MySQL bạn có password:
+  spring.datasource.password=YOUR_PASSWORD
+
+Nếu MySQL không có password:
+  spring.datasource.password=
+  (để trống)
+
+
+==========================================
+STEP 3: Reset Database
+==========================================
+
+Mở Command Prompt / Terminal, gõ:
+
+Windows:
+  mysql -u root -p
+  (nhập password hoặc Enter)
+  
+  DROP DATABASE IF EXISTS WebBanHang;
+  CREATE DATABASE WebBanHang;
+  EXIT;
+
+macOS/Linux:
+  mysql -u root -p
+  (nhập password hoặc Enter)
+  
+  DROP DATABASE IF EXISTS WebBanHang;
+  CREATE DATABASE WebBanHang;
+  EXIT;
+
+
+==========================================
+STEP 4: Khởi động App
+==========================================
+
+Terminal/Command Prompt:
+
+  cd c:\Users\Admin\Downloads\CaoXuanBinh\CAOXUANBINH
+  mvn clean install
+  mvn spring-boot:run
+
+HOẶC chạy file script:
+
+  Windows: run-reset.bat
+  macOS/Linux: bash run-reset.sh
+
+
+==========================================
+STEP 5: Chờ đến khi thấy
+==========================================
+
+✓ Categories initialized
+✓ Products initialized
+✓ Sample data initialization completed!
+
+
+==========================================
+STEP 6: Test API
+==========================================
+
+Mở Browser, nhập:
+
+http://localhost:8080/api/products
+
+Sẽ thấy JSON array 12 sản phẩm:
+
+[
+  {
+    "id": 1,
+    "name": "iPhone 16 Pro Max",
+    "price": 33990000,
+    "description": "Flagship moi nhat tu Apple",
+    ...
+  },
+  ...
+]
+
+
+==========================================
+✅ DONE! Data sẽ hiển thị
+==========================================
+
+
+Nếu vẫn không được:
+
+1. Check MySQL running: mysql -u root -e "SELECT 1"
+   
+2. Check Database tạo chưa: mysql -u root -e "SHOW DATABASES"
+   
+3. Check Tables: mysql -u root WebBanHang -e "SHOW TABLES"
+   
+4. Check Console log (tìm ERROR)
+   
+5. Gọi API: curl http://localhost:8080/api/products
+
+
+File tìm hiểu thêm: FIX_NO_DATA.md
